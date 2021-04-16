@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include/head"></head>
+<body class="layui-anim layui-anim-up">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a><cite>开仓建议</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <fieldset class="layui-elem-field">
+        <legend>开仓建议</legend>
+        <div class="layui-field-box">
+            <div class="layui-input-inline layui-show-xs-block">
+                资金总量:
+            </div>
+            <div class="layui-input-inline layui-show-xs-block">
+                <input class="layui-input" style="width: 150px" name="capital" id="capital" th:value="${wallet.amount}"
+                       onchange="initTable()">
+            </div>
+            <!--            <div class="layui-input-inline layui-show-xs-block">-->
+            <!--                单笔资金回撤:-->
+            <!--            </div>-->
+            <!--            <div class="layui-input-inline layui-show-xs-block">-->
+            <!--                <input class="layui-input" style="width: 50px" name="retreat" id="retreat" value="5">-->
+            <!--            </div>-->
+            <div class="layui-input-inline layui-show-xs-block" style="color: red">
+                <!--                标准仓为最接近资金回撤百分比的数量,-->
+                <!--                清仓为最接近资金回撤百分的50%,-->
+                <!--                重仓为最接近资金回撤百分的150%-->
+                显示的开仓手数为最接近止损比例的手数
+            </div>
+            <table class="layui-table" id="strategy-table">
+                <thead>
+                <tr align="center">
+                    <th style="width: 80px">品种</th>
+                    <th style="width: 100px">最大开仓</th>
+                    <th>止损点数</th>
+                    <th align="center" position1="2">轻仓(止损后资金回撤2%)</th>
+                    <th align="center" position2="4">标准(止损后资金回撤4%)</th>
+                    <th align="center" position3="6">重仓(止损后资金回撤6%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td price="6.774" cost="40.64">恒指</td>
+                    <td margin="407"></td>
+                    <td limited>40</td>
+                    <td position="position1"></td>
+                    <td position="position2"></td>
+                    <td position="position3"></td>
+                </tr>
+                <tr>
+                    <td price="30.97">德指</td>
+                    <td margin="743.22"></td>
+                    <td limited>15</td>
+                    <td position="position1"></td>
+                    <td position="position2"></td>
+                    <td position="position3"></td>
+                </tr>
+                <tr>
+                    <td price="10">金油气</td>
+                    <td margin="400"></td>
+                    <td limited>30</td>
+                    <td position="position1"></td>
+                    <td position="position2"></td>
+                    <td position="position3"></td>
+                </tr>
+                <tr>
+                    <td price="20">纳指</td>
+                    <td margin="300"></td>
+                    <td limited>20</td>
+                    <td position="position1"></td>
+                    <td position="position2"></td>
+                    <td position="position3"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+</div>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+    });
+
+    function initTable() {
+        var position1 = $("position1").attr("position1");
+        var position2 = $("position2").attr("position2");
+        var position3 = $("position3").attr("position3");
+
+        $("td[margin]").each(function () {
+            var margin = $(this).attr("margin");
+            $(this).text(Math.floor($("#capital").val() / margin));
+
+            // 获取止损点数
+            var limited = $(this).parent().find("[limited]").text();
+
+            // 获取单点价格
+            var price = $(this).parent().find("[price]").attr("price");
+
+            var cost = $(this).parent().find("[cost]").attr("cost");
+
+            // 计算单手亏损金额
+            var loss = parseFloat(limited * price + cost).toFixed(2);
+
+
+            $(this).parent().find("[position=position1]").text(loss + "(" + parseFloat(loss / 10000 * 100).toFixed(2) + "%)");
+            $(this).parent().find("[position=position2]").text(loss);
+            $(this).parent().find("[position=position3]").text(loss);
+        });
+    }
+
+    function compute(percentage, max, price, limit) {
+        // 计算最接近止损比例的数量
+        if (max > 1) {
+            for (var i = 1; i < max; i++) {
+                var ddd = limit * price * i * 100 / $("#capital").val();
+                if (ddd > percentage) {
+                    num = i;
+                    break;
+                }
+            }
+            if (num > 1) {
+                var tmp1 = parseFloat(limit * price * num / $("#capital").val() * 100).toFixed(2);
+                var tmp2 = parseFloat(limit * price * (num - 1) / $("#capital").val() * 100).toFixed(2);
+                if (tmp1 - percentage > percentage - tmp2) {
+                    num -= 1;
+                }
+            }
+        } else {
+            num = max;
+        }
+    }
+
+    function initTable1() {
+        // 计算最大开仓数量
+        $("td[margin]").each(function () {
+            var margin = $(this).attr("margin");
+            $(this).text(Math.floor($("#capital").val() / margin));
+        });
+
+        // 仓位管理
+        $("td[position]").each(function () {
+            // 通过前一个节点获取止损点位
+            var limit = $(this).prev().text();
+            // 获取品种的单价
+            var price = $(this).parent().find("[price]").attr("price");
+            // 获取最大开仓数量
+            var max = $(this).parent().find("[margin]").text();
+
+            var num = 0;
+
+            var position = $(this).attr("position");
+
+            var percentage = $("th[" + position + "]").eq(0).attr(position);
+            // 计算最接近止损比例的数量
+            if (max > 1) {
+                for (var i = 1; i < max; i++) {
+                    var ddd = limit * price * i * 100 / $("#capital").val();
+                    if (ddd > percentage) {
+                        num = i;
+                        break;
+                    }
+                }
+                if (num > 1) {
+                    var tmp1 = parseFloat(limit * price * num / $("#capital").val() * 100).toFixed(2);
+                    var tmp2 = parseFloat(limit * price * (num - 1) / $("#capital").val() * 100).toFixed(2);
+                    if (tmp1 - percentage > percentage - tmp2) {
+                        num -= 1;
+                    }
+                }
+            } else {
+                num = max;
+            }
+
+            $(this).text(num + "(" + parseFloat(limit * price * num / $("#capital").val() * 100).toFixed(2) + "%)");
+        });
+    }
+
+    initTable();
+</script>
+</body>
+</html>

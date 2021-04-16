@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include/head"></head>
+<body>
+<div class="x-nav">
+    <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a><cite>导航元素</cite></a>
+    </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="username" placeholder="请输入订单号" autocomplete="off"
+                                   class="layui-input"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                        <i class="layui-icon"></i>批量删除
+                    </button>
+                    <button class="layui-btn" onclick="xadmin.open('添加用户','./order-add.html',800,600)">
+                        <i class="layui-icon"></i>添加
+                    </button>
+                </div>
+                <div class="layui-card-body ">
+                    <table id="orders-table-page" class="layui-table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate', 'form', 'table'],
+        function () {
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({elem: '#start'});
+            //执行一个laydate实例
+            laydate.render({elem: '#end'});
+
+            var table = layui.table;
+            table.render({
+                elem: '#orders-table-page'
+                , url: 'count'
+                , cols: [
+                    [
+                        {field: 'code', width: 180, title: 'ID', },
+                        {field: 'turnover', width: 210, title: '成交量', templet: "#turnover", sort: true},
+                        {field: 'code', width: 180, title: '本期', },
+                        {field: 'code', width: 180, title: '下期', },
+                        {field: 'rateDayForYear', width: 180, title: '7日年化', templet: "#rate7DayForYear", sort: true},
+                        {field: 'rateDayForYear', width: 180, title: '30日年化', templet: "#rate30DayForYear", sort: true},
+                        {field: 'rateDayForYear', width: 180, title: '180日年化', templet: "#rate180DayForYear", sort: true}
+
+                    ]
+                ]
+                , initSort: {field: 'wealth', type: 'desc'}
+                , page: true
+                , even: true
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data //解析数据列表
+                    };
+                }
+            });
+        });
+
+</script>
+<script type="text/html" id="turnover">
+    ${{ d.turnover/100000000 }}亿
+</script>
+<script type="text/html" id="rate7DayForYear">
+    {{ d.rateDayForYear[7] }}
+</script>
+<script type="text/html" id="rate30DayForYear">
+    {{ d.rateDayForYear[30] }}
+</script>
+<script type="text/html" id="rate180DayForYear">
+    {{ d.rateDayForYear[180] }}
+</script>
+</html>

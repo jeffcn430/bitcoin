@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include/head"></head>
+<body>
+<div class="layui-fluid">
+    <fieldset class="layui-elem-field">
+        <legend>资金统计</legend>
+        <div class="layui-field-box">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-carousel x-admin-carousel x-admin-backlog" lay-anim="" lay-indicator="inside"
+                             lay-arrow="none" style="width: 100%; height: 90px;">
+                            <div carousel-item="">
+                                <ul class="layui-row layui-col-space10 layui-this">
+                                    <li class="layui-col-xs2">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <h3>初始资金</h3>
+                                            <p><cite th:text="${wallet.initialAmount}">999</cite></p>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-xs2">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <h3>当前资金</h3>
+                                            <p><cite th:text="${wallet.amount}">99999</cite></p>
+                                        </a>
+                                    </li>
+                                    <li class="layui-col-xs2">
+                                        <a href="javascript:;" class="x-admin-backlog-body">
+                                            <h3>提现资金</h3>
+                                            <p><cite th:text="${wallet.withdraw}">9999</cite></p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-sm12 layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    资金量(近30日)
+                </div>
+                <div class="layui-card-body" style="min-height: 280px;">
+                    <div id="echarts-line" class="layui-col-sm12" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm12 layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    开仓数量(近30日)
+                </div>
+                <div class="layui-card-body" style="min-height: 280px;">
+                    <div id="echarts-pie" class="layui-col-sm12" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script type="text/javascript">
+    // 初始化echarts实例
+    var myChart = echarts.init(document.getElementById('echarts-line'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        legend: {data: ['提现资金', '当前资金']},
+        yAxis: {type: 'value'},
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        },
+        series: [
+            {
+                name: '提现资金',
+                type: 'line',
+                stack: '总量',
+                data: [0, 500, 1000, 1000, 2000, 3000, 7000]
+            },
+            {
+                name: '当前资金',
+                type: 'line',
+                stack: '总量',
+                data: [10000, 10000, 12000, 7000, 1290, 1330, 11320]
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+
+    // 初始化echarts实例
+    var myChart = echarts.init(document.getElementById('echarts-pie'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['德指', '恒指', '纳指', '黄金', '原油', '天然气', '铜']
+        },
+        series: [
+            {
+                name: '开仓数量',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: [
+                    {value: 335, name: '德指'},
+                    {value: 310, name: '天然气'},
+                    {value: 310, name: '铜'},
+                    {value: 310, name: '恒指'},
+                    {value: 234, name: '纳指'},
+                    {value: 135, name: '黄金'},
+                    {value: 548, name: '原油'}
+                ]
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include/head"></head>
+<body>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="platform.id" class="layui-form-label">
+                <span class="x-red">*</span>平台
+            </label>
+            <div class="layui-input-inline">
+                <select id="platform.id" name="platform.id"  lay-verify="required">
+                    <option th:each="platform:${platforms}" th:value="${platform.getId()}" th:text="${platform.getName()}"></option>
+                </select>
+            </div>
+            <label for="variety.id" class="layui-form-label">
+                <span class="x-red">*</span>品种
+            </label>
+            <div class="layui-input-inline">
+                <select id="variety.id" name="variety.id" lay-verify="required">
+                    <option th:each="variety:${varietys}" th:value="${variety.getId()}" th:text="${variety.getVarietyBase().getName()}"></option>
+                </select>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label for="bbi" class="layui-form-label">
+                <span class="x-red">*</span>方向
+            </label>
+            <div class="layui-input-inline">
+                <select id="bbi" name="bbi" lay-verify="required">
+                    <option value="1">多</option>
+                    <option value="2">空</option>
+                </select>
+            </div>
+            <label for="number" class="layui-form-label">
+                <span class="x-red">*</span>开仓数量
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="number" name="number" required="" lay-verify="required" autocomplete="off" class="layui-input" value="1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="startPoint" class="layui-form-label">
+                <span class="x-red">*</span>开仓点位
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="startPoint" name="startPoint" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <label for="startTime" class="layui-form-label">
+                <span class="x-red">*</span>开仓时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="startTime" name="startTime" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="endPoint" class="layui-form-label">
+                <span class="x-red">*</span>平仓点位
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="endPoint" name="endPoint" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <label for="endTime" class="layui-form-label">
+                <span class="x-red">*</span>平仓时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="endTime" name="endTime" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="limited" class="layui-form-label">
+                止损点位
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="limited" name="limited" required="" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
+            <label for="stop" class="layui-form-label">
+                止盈点位
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="stop" name="stop" required="" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="loss" class="layui-form-label">
+                平仓盈亏
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="loss" name="loss" required="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="teacher.id" class="layui-form-label">
+                <span class="x-red">*</span>指导老师
+            </label>
+            <div class="layui-input-inline">
+                <select id="teacher.id" name="teacher.id" lay-verify="required">
+                    <option th:each="teacher:${teachers}" th:value="${teacher.getId()}" th:text="${teacher.getName()}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button  class="layui-btn" lay-filter="add" lay-submit="">创建</button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layer', 'laydate'], function () {
+        $ = layui.jquery;
+        var form = layui.form, layer = layui.layer;
+
+        //执行一个laydate实例
+        layui.laydate.render({
+            elem: '#startTime' //指定元素
+            ,type: 'datetime'
+            ,isInitValue: false
+            ,value: new Date()
+        });
+
+        //执行一个laydate实例
+        layui.laydate.render({
+            elem: '#endTime' //指定元素
+            ,type: 'datetime'
+            ,isInitValue: false
+            ,value: new Date()
+        });
+
+        //自定义验证规则
+        form.verify({
+            // nikename: function (value) {
+            //     if (value.length < 5) {
+            //         return '昵称至少得5个字符啊';
+            //     }
+            // }
+            // , pass: [/(.+){6,12}$/, '密码必须6到12位']
+            // , repass: function (value) {
+            //     if ($('#L_pass').val() != $('#L_repass').val()) {
+            //         return '两次密码不一致';
+            //     }
+            // }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            layer.alert("确定添加", function () {
+                $.post("finishPosition",data.field,function(res){
+                    if(res.code == 0){
+                        // 弹出成功提示
+                        parent.layer.msg(res.msg, {icon: 6, time: 2000});
+                        // 刷新表格
+                        var table = parent.layui.table;
+                        if(table != null){
+                            table.reload('orders-table-page',{page:{curr:1}});
+                        }
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    }else{
+                        // 弹出失败提示
+                        layer.msg(res.msg, {time: 2000});
+                    }
+                }, "json");
+            });
+            return false;
+        });
+
+        //表刷新方法
+        var reloadTable = function (item) {
+            table.reload("listReload", { //此处是上文提到的 初始化标识id
+                where: {
+                    //key: { //该写法上文已经提到
+                    type: item.type, id: item.id
+                    //}
+                }
+            });
+        };
+    });
+</script>
+</body>
+</html>
