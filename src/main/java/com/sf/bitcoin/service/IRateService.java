@@ -14,11 +14,16 @@ public interface IRateService {
     void initRate();
 
     /**
+     * 结算金额
+     */
+    void initRealRate();
+
+    /**
      * 获取费率列表
      *
      * @return 费率列表
      */
     List<ContractRateVo> getRateCountVoList();
 
-    void initContractRate(List<ContractRateVo> contracts);
+    void initContractRate();
 }

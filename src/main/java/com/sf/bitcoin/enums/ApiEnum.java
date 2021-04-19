@@ -11,7 +11,9 @@ public enum ApiEnum {
      * 主域名
      */
     mian("https://api.hbdm.com", "https://api.hbdm.com"),
-    /** 成交量 */
+    /**
+     * 成交量
+     */
     TURNOVER("/swap-api/v1/swap_open_interest", "/linear-swap-api/v1/swap_open_interest"),
     /**
      * 合约列表
@@ -20,7 +22,15 @@ public enum ApiEnum {
     /**
      * 历史费率查询
      */
-    HISTORY_RATE("/swap-api/v1/swap_historical_funding_rate", "/linear-swap-api/v1/swap_historical_funding_rate");
+    HISTORY_RATE("/swap-api/v1/swap_historical_funding_rate", "/linear-swap-api/v1/swap_historical_funding_rate"),
+    /**
+     * 实施费率查询
+     */
+    REAL_RATE("/swap-api/v1/swap_settlement_records", "/linear-swap-api/v1/swap_settlement_records"),
+    /**
+     * 当前资金费率
+     */
+    NOW_RATE("/swap-api/v1/swap_funding_rate", "/linear-swap-api/v1/swap_funding_rate");
 
     /**
      * 币本位接口

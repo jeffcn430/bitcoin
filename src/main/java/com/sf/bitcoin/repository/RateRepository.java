@@ -25,20 +25,18 @@ public interface RateRepository extends JpaRepository<Rate, Integer> {
     Rate getFirstByContractCodeAndFundingTime(String contractCode, LocalDateTime fundingTime);
 
     /**
-     * 获取指定日期的费率列表
+     * 获取年化费率
      *
-     * @param startDateTime 开始时间
-     * @param endDateTime   结束时间
      * @return 费率列表
      */
-    @Query(value = "select " +
-            " contract_code as contractCode," +
-            " date_format(funding_time, '%y-%m-%d') as fundingTime, " +
-            " sum(funding_Rate) as fundingRate, " +
-            " max(funding_time) " +
-            " from Rate " +
-            " where funding_Time >= ? and funding_Time < ? " +
-            " group by contract_Code, date_format(funding_time, '%y-%m-%d')" +
-            " order by funding_Time desc ", nativeQuery = true)
-    List<Object[]> getRateList(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    @Query(value = "select contract_code, " +
+            "           cast(count(1) as DECIMAL) count, " +
+            "           max(funding_time) lastTime," +
+            "           CAST(avg(case WHEN funding_time >= date_sub(now(),interval 7 day) then funding_rate end)*100*3*365 as decimal(38, 2)) as day7ForYear,\n" +
+            "           CAST(avg(case WHEN funding_time >= date_sub(now(),interval 30 day) then funding_rate end)*100*3*365 as decimal(38, 2)) as day30ForYear,\n" +
+            "           CAST(avg(case WHEN funding_time >= date_sub(now(),interval 180 day) then funding_rate end)*100*3*365 as decimal(38, 2)) as day180ForYear\n" +
+            "       from rate " +
+            "       group by contract_code " +
+            "       order by funding_time desc", nativeQuery = true)
+    List<Object[]> getRateList();
 }

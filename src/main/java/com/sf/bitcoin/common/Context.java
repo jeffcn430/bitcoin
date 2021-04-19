@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author admin
@@ -30,18 +32,18 @@ public class Context {
     private IContractService contractService;
 
     /**
-     * 合约列表
-     */
-    private List<Contract> contracts;
-    /**
      * 合约统计信息
      */
-    private List<ContractRateVo> contractRateVos;
+    private Map<String, ContractRateVo> contractRateVos = new HashMap<>();
 
     @PostConstruct
     public void init() {
-        this.contractRateVos = this.contractService.initContractInfo();
-        this.rateService.initContractRate(this.contractRateVos);
+        this.contractService.initContractInfo();
+
+//        rateService.initRate();
+        rateService.initRealRate();
+
+        this.rateService.initContractRate();
         log.info("初始化成功!");
     }
 }

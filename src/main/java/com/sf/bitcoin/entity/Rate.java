@@ -65,6 +65,11 @@ public class Rate implements Serializable {
      */
     @Column(precision = 21, scale = 19)
     private BigDecimal avgPremiumIndex;
+    /**
+     * 结算金额
+     */
+    @Column(precision = 21, scale = 19)
+    private BigDecimal settlementPrice;
 
     public Rate(String contractCode, LocalDateTime fundingTime, BigDecimal fundingRate) {
         this.contractCode = contractCode;

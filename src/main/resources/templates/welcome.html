@@ -56,17 +56,19 @@
             var table = layui.table;
             table.render({
                 elem: '#orders-table-page'
-                , url: 'count'
+                , url: 'count?turnover=1'
                 , cols: [
                     [
-                        {field: 'code', width: 180, title: 'ID', },
-                        {field: 'turnover', width: 210, title: '成交量', templet: "#turnover", sort: true},
-                        {field: 'code', width: 180, title: '本期', },
-                        {field: 'code', width: 180, title: '下期', },
-                        {field: 'rateDayForYear', width: 180, title: '7日年化', templet: "#rate7DayForYear", sort: true},
-                        {field: 'rateDayForYear', width: 180, title: '30日年化', templet: "#rate30DayForYear", sort: true},
-                        {field: 'rateDayForYear', width: 180, title: '180日年化', templet: "#rate180DayForYear", sort: true}
-
+                        {field: 'contractCode',title: '合约',},
+                        {field: 'type', title: '合约类型', sort: true},
+                        {field: 'turnover', title: '成交量', templet: "#turnover", sort: true},
+                        {field: 'nowRate', title: '本期', sort: true},
+                        {field: 'nextRate', title: '下期', sort: true},
+                        // {field: 'countDayNum', title: '数据天数'},
+                        {field: 'lastTime', title: '最后统计时间', width: 180, sort: true},
+                        {field: 'rate7DayForYear', title: '7日年化', templet: "#rate7Day", sort: true},
+                        {field: 'rate30DayForYear', title: '30日年化', templet: "#rate30Day", sort: true},
+                        {field: 'rate180DayForYear', title: '180日年化', templet: "#rate180Day", sort: true}
                     ]
                 ]
                 , initSort: {field: 'wealth', type: 'desc'}
@@ -85,15 +87,27 @@
 
 </script>
 <script type="text/html" id="turnover">
-    ${{ d.turnover/100000000 }}亿
+    {{ d.turnover/100000000 }}亿
 </script>
-<script type="text/html" id="rate7DayForYear">
-    {{ d.rateDayForYear[7] }}
+<script type="text/html" id="rate7Day">
+    {{# if(d.type == 'USDT'){ }}
+    {{ (d.rate7DayForYear * 0.45).toFixed(2) }}
+    {{# } else { }}
+    {{ d.rate7DayForYear }}
+    {{# } }}
 </script>
-<script type="text/html" id="rate30DayForYear">
-    {{ d.rateDayForYear[30] }}
+<script type="text/html" id="rate30Day">
+    {{# if(d.type == 'USDT'){ }}
+    {{ (d.rate30DayForYear * 0.45).toFixed(2) }}
+    {{# } else { }}
+    {{ d.rate30DayForYear }}
+    {{# } }}
 </script>
-<script type="text/html" id="rate180DayForYear">
-    {{ d.rateDayForYear[180] }}
+<script type="text/html" id="rate180Day">
+    {{# if(d.type == 'USDT'){ }}
+    {{ (d.rate180DayForYear * 0.45).toFixed(2) }}
+    {{# } else { }}
+    {{ d.rate180DayForYear }}
+    {{# } }}
 </script>
 </html>

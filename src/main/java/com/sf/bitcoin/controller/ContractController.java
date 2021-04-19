@@ -28,9 +28,9 @@ public class ContractController {
      * @return 费率统计
      */
     @GetMapping("count")
-    public ResultData getRateCount() {
-        List<ContractRateVo> list = context.getContractRateVos().stream()
-                .filter(o->o.getTurnover().doubleValue() > 100000000)
+    public ResultData getRateCount(Long turnover) {
+        List<ContractRateVo> list = context.getContractRateVos().values().stream()
+                .filter(o->o.getTurnover().doubleValue() > turnover)
                 .collect(Collectors.toList());
         return new ResultData(list);
     }
