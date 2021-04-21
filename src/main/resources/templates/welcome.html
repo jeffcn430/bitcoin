@@ -56,7 +56,7 @@
             var table = layui.table;
             table.render({
                 elem: '#orders-table-page'
-                , url: 'count?turnover=1'
+                , url: 'count?turnover=500000000'
                 , cols: [
                     [
                         {field: 'contractCode',title: '合约',},
@@ -66,9 +66,9 @@
                         {field: 'nextRate', title: '下期', sort: true},
                         // {field: 'countDayNum', title: '数据天数'},
                         {field: 'lastTime', title: '最后统计时间', width: 180, sort: true},
-                        {field: 'rate7DayForYear', title: '7日年化', templet: "#rate7Day", sort: true},
-                        {field: 'rate30DayForYear', title: '30日年化', templet: "#rate30Day", sort: true},
-                        {field: 'rate180DayForYear', title: '180日年化', templet: "#rate180Day", sort: true}
+                        {field: 'rate7DayForYear', title: '7日年化', sort: true},
+                        {field: 'rate30DayForYear', title: '30日年化', sort: true},
+                        {field: 'rate180DayForYear', title: '180日年化', sort: true}
                     ]
                 ]
                 , initSort: {field: 'wealth', type: 'desc'}

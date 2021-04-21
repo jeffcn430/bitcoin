@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.LocalDateTime;
-
 /**
  * api获取合约费率
  *
@@ -18,12 +16,13 @@ import java.time.LocalDateTime;
 public class StaticScheduleTask {
     @Autowired
     IRateService rateService;
+
     /**
      * 每分钟获取成交量
      */
     @Scheduled(cron = "0 0/1 * * * ?")
     private void loadContractInfo() {
-        rateService.initRate();
+
     }
 
     /**
@@ -32,6 +31,6 @@ public class StaticScheduleTask {
      */
     @Scheduled(cron = "0 10 0,8,16 * * ? ")
     private void loadContractRate() {
-
+        rateService.initRate();
     }
 }

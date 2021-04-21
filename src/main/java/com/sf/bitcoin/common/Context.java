@@ -30,7 +30,7 @@ public class Context {
     private ContractRepository contractRepository;
     @Autowired
     private IContractService contractService;
-
+    
     /**
      * 合约统计信息
      */
@@ -40,7 +40,7 @@ public class Context {
     public void init() {
         this.contractService.initContractInfo();
 
-//        rateService.initRate();
+        rateService.initRate();
         rateService.initRealRate();
 
         this.rateService.initContractRate();
