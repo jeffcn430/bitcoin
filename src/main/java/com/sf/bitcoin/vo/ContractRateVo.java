@@ -2,6 +2,7 @@ package com.sf.bitcoin.vo;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -12,6 +13,7 @@ public class ContractRateVo {
      * 合约编号
      */
     private String contractCode;
+    private String feeAsset;
     /**
      * 成交量
      */
@@ -19,4 +21,7 @@ public class ContractRateVo {
     private double fundingRate;
     private double estimatedRate;
 
+//    public ContractRateVo(String contractCode) {
+//        this.contractCode = contractCode;
+//    }
 }
